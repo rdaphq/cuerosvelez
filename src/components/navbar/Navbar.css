@@ -39,7 +39,7 @@
   text-transform: uppercase;
 }
 .nav-links a:hover {
-  color: rgba(0, 0, 0, 0.062745098);
+  color: #777;
 }
 .nav-brand {
   top: 50%;

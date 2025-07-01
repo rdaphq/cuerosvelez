@@ -88,7 +88,6 @@ const ProductDetail = () => {
     if (loading) {
         return (
             <div className='product-loading'>
-                <div className='product-loading-side'></div>
                 <div className='product-loading-image'></div>
                 <div className='product-loading-content'>
                     <div className="product-loading-content-title"></div>
