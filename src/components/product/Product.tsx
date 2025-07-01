@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useCart } from '../../context/CartContext';
 import { getProduct, getRelatedProducts } from "../../api/products";
+
+import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
+
 import './Product.css';
 
 interface Product {
@@ -43,6 +47,7 @@ const ProductDetail = () => {
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [selectedColor, setSelectedColor] = useState<string>('');
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -52,23 +57,18 @@ const ProductDetail = () => {
                 setLoading(true);
                 setError(null);
 
-                // const productData = await getProduct('125829258'); // PARA PROBAR ERRORES
                 const productData = await getProduct('125829257');
-                console.log('Product data received:', productData);
-                
                 if (!productData) {
                     setError('No se pudo cargar el producto');
                     return;
                 }
-                
+
                 setProduct(productData);
 
                 const related = await getRelatedProducts();
-                console.log('Related products received:', related);
                 setRelatedProducts(related || []);
 
             } catch (err) {
-                console.error('Error loading product:', err);
                 setError('Error al cargar el producto');
             } finally {
                 setLoading(false);
@@ -77,6 +77,13 @@ const ProductDetail = () => {
 
         load();
     }, []);
+
+    const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+        initial: 0,
+        slideChanged(slider) {
+            setSelectedImageIndex(slider.track.details.rel);
+        },
+    });
 
     if (loading) {
         return (
@@ -96,33 +103,48 @@ const ProductDetail = () => {
     }
 
     if (error) {
-        return <div className="product-error">Error: {error}</div>;
+        return (
+            <div className="product-error">
+                <h2>
+                    <i className='fi fi-rr-sad-tear'></i>
+                </h2>
+                <div>
+                    <p>Lo sentimos, algo no salió bien.</p>
+                    <a href="/">Inicio</a>
+                </div>
+                {/* {error} */}
+            </div>
+        );
     }
 
     if (!product) {
-        return <div className="product-error">Producto no encontrado</div>;
+        return (
+            <div className="product-error">
+                <h2>
+                    <i className='fi fi-rr-sad-tear'></i>
+                </h2>
+                <div>
+                    <p>No encontramos este producto.</p>
+                    <a href="/">Inicio</a>
+                </div>
+                {/* {error} */}
+            </div>
+        );
     }
 
     const availableSizes = Array.from(new Set(
-        product.items
-            ?.filter(item => item.Talla && Array.isArray(item.Talla))
-            .flatMap(item => item.Talla) || []
+        product.items.flatMap(item => item.Talla || [])
     )).sort();
-    
+
     const availableColors = Array.from(new Set(
-        product.items
-            ?.filter(item => item.Color && Array.isArray(item.Color))
-            .flatMap(item => item.Color) || []
+        product.items.flatMap(item => item.Color || [])
     ));
 
-    // Get available items for selected size and color combination
-    // const getAvailableItems = () => {
-    //     return product.items?.filter(item =>
-    //         (!selectedSize || item.Talla?.includes(selectedSize)) &&
-    //         (!selectedColor || item.Color?.includes(selectedColor)) &&
-    //         item.sellers?.[0]?.commertialOffer?.IsAvailable
-    //     ) || [];
-    // };
+    const firstAvailableItem = product.items.find(item =>
+        item.sellers?.[0]?.commertialOffer?.IsAvailable
+    ) || product.items?.[0];
+
+    const images = firstAvailableItem?.images || [];
 
     const handleAddToCart = () => {
         if (!product || !selectedSize || !selectedColor) {
@@ -130,14 +152,14 @@ const ProductDetail = () => {
             return;
         }
 
-        const selectedItem = product.items?.find(item => 
-            item.Talla?.includes(selectedSize) && 
-            item.Color?.includes(selectedColor) &&
+        const selectedItem = product.items.find(item =>
+            item.Talla.includes(selectedSize) &&
+            item.Color.includes(selectedColor) &&
             item.sellers?.[0]?.commertialOffer?.IsAvailable
         );
 
         if (!selectedItem) {
-            alert('Combinación de talla y color no disponible o sin stock');
+            alert('Combinación no disponible o sin stock');
             return;
         }
 
@@ -147,100 +169,75 @@ const ProductDetail = () => {
         const cartItem: CartItem = {
             id: selectedItem.itemId,
             title: product.productName,
-            price: price,
+            price,
             size: selectedSize,
             color: selectedColor,
-            image: image
+            image
         };
 
         addToCart(cartItem);
-
-        console.log(cartItem)
         alert('Producto añadido al carrito');
     };
-
-    const firstAvailableItem = product.items?.find(item => 
-        item.sellers?.[0]?.commertialOffer?.IsAvailable
-    ) || product.items?.[0];
 
     const currentPrice = firstAvailableItem?.sellers?.[0]?.commertialOffer?.Price || 0;
     const listPrice = firstAvailableItem?.sellers?.[0]?.commertialOffer?.ListPrice || 0;
 
     const isSelectedCombinationAvailable = () => {
         if (!selectedSize || !selectedColor) return true;
-        
-        const matchingItem = product.items?.find(item =>
-            item.Talla?.includes(selectedSize) &&
-            item.Color?.includes(selectedColor)
+        const matchingItem = product.items.find(item =>
+            item.Talla.includes(selectedSize) &&
+            item.Color.includes(selectedColor)
         );
-        
         return matchingItem?.sellers?.[0]?.commertialOffer?.IsAvailable || false;
     };
 
-    const breadcrumbTranslate = product.categories[0].replace(/\//g, ' > ');
-    const breadcrumb = breadcrumbTranslate.replace('>', '');
-
+    const breadcrumb = product.categories[0].replace(/\//g, ' > ').replace('>', '');
+    
     return (
         <>
             <p className='breadcrumb'>{breadcrumb}</p>
             <div className='product'>
                 <div className='product-view'>
-                    <div className='product-side'>
-                        {firstAvailableItem?.images?.length > 0 ? (
-                            firstAvailableItem.images.map((image, index) => (
+                    <div className="keen-slider main-slider" ref={sliderRef}>
+                        {images.map((image, index) => (
+                            <div key={index} className="keen-slider__slide main-slide">
                                 <img
-                                    key={index}
-                                    className='product-side-image'
-                                    src={image.imageUrl} 
-                                    alt={image.imageText || product.productName}
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.style.display = 'none';
-                                    }}
+                                    src={image.imageUrl}
+                                    alt={image.imageText || `Imagen ${index + 1}`}
+                                    className="main-image"
                                 />
-                            ))
-                        ) : (
-                            <div className="product-side-noimage">No image</div>
-                        )}
+                            </div>
+                        ))}
                     </div>
 
-                    <div className='product-images'>
-                        {firstAvailableItem?.images?.length > 0 ? (
-                            firstAvailableItem.images.map((image, index) => (
-                                <img
-                                    key={index}
-                                    className='product-images-image'
-                                    src={image.imageUrl} 
-                                    alt={image.imageText || product.productName}
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.style.display = 'none';
-                                    }}
-                                />
-                            ))
-                        ) : (
-                            <div className="product-side-noimage">Sin imagen disponible</div>
-                        )}
+                    <div className="thumbnails">
+                        {images.map((image, index) => (
+                            <img
+                                key={index}
+                                className={`thumb ${index === selectedImageIndex ? 'active' : ''}`}
+                                src={image.imageUrl}
+                                alt={`Miniatura ${index + 1}`}
+                                onClick={() => instanceRef.current?.moveToIdx(index)}
+                            />
+                        ))}
                     </div>
                 </div>
-                
+
                 <div className='product-info'>
                     <p className='product-info-brand'>{product.brand}</p>
                     <h1 className='product-info-name'>{product.productName}</h1>
 
                     <div className='product-price'>
                         <span className='product-price-current'>
-                            ${(currentPrice).toLocaleString('es-CO')}
+                            ${currentPrice.toLocaleString('es-CO')}
                         </span>
-
                         {listPrice > currentPrice && (
                             <span className='product-price-original'>
-                                ${(listPrice).toLocaleString('es-CO')}
+                                ${listPrice.toLocaleString('es-CO')}
                             </span>
                         )}
                     </div>
-                    
-                    {/* Size selection */}
+
                     {availableSizes.length > 0 && (
                         <div className='product-selector'>
                             <p>Escoge la talla:</p>
@@ -258,7 +255,6 @@ const ProductDetail = () => {
                         </div>
                     )}
 
-                    {/* Color selection */}
                     {availableColors.length > 0 && (
                         <div className='product-selector'>
                             <p>Escoge el color:</p>
@@ -275,14 +271,14 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     <div className='product-add'>
                         <p><i className='fi fi-rr-check'></i> Pago 100% seguro</p>
-                        <button 
+                        <button
                             onClick={handleAddToCart}
                             disabled={
-                                !selectedSize || 
-                                !selectedColor || 
+                                !selectedSize ||
+                                !selectedColor ||
                                 !isSelectedCombinationAvailable()
                             }
                             className={`product-addtoCart ${
@@ -290,12 +286,11 @@ const ProductDetail = () => {
                                     ? 'disabled' : ''
                             }`}
                         >
-                            {!selectedSize || !selectedColor 
-                                ? 'Selecciona talla y color' 
+                            {!selectedSize || !selectedColor
+                                ? 'Selecciona talla y color'
                                 : !isSelectedCombinationAvailable()
                                     ? 'Sin stock'
-                                    : 'Añadir al carrito'
-                            }
+                                    : 'Añadir al carrito'}
                         </button>
                     </div>
 
@@ -306,7 +301,6 @@ const ProductDetail = () => {
                                 <p>{product.description}</p>
                             </div>
                         )}
-
                         <div className='product-info-ref'>
                             <p>Código de referencia: {product.productReferenceCode}</p>
                         </div>
@@ -314,43 +308,41 @@ const ProductDetail = () => {
                 </div>
             </div>
 
-            <div className="related">
-                {relatedProducts.length > 0 && (
-                    <div className='related-products'>
-                        <h2>Productos relacionados</h2>
-                        <div className='related-products-grid'>
-                            {relatedProducts.map(related => (
-                                <div key={related.productId} className='related-products-item'>
-                                    <div className="related-products-item-image-wrapper">
-                                        {related.items?.[0]?.images?.[0]?.imageUrl ? (
-                                            <img
-                                                className='related-products-item-image image-blend'
-                                                src={related.items[0].images[0].imageUrl} 
-                                                alt={related.productName}
-                                                onError={(e) => {
-                                                    const target = e.target as HTMLImageElement;
-                                                    target.style.display = 'none';
-                                                }}
-                                            />
-                                        ) : (
-                                            <div className="no-image">Sin imagen</div>
-                                        )}
-                                    </div>
-                                    <div className="related-products-item-text">
-                                        <p className="brand">{related.brand}</p>
-                                        <h3 className="title">{related.productName}</h3>
-                                        {related.items?.[0]?.sellers?.[0]?.commertialOffer?.Price && (
-                                            <p className="price">
-                                                ${(related.items[0].sellers[0].commertialOffer.Price).toLocaleString('es-CO')}
-                                            </p>
-                                        )}
-                                    </div>
+            {relatedProducts.length > 0 && (
+                <div className='related-products'>
+                    <h2>Productos relacionados</h2>
+                    <div className='related-products-grid'>
+                        {relatedProducts.map(related => (
+                            <div key={related.productId} className='related-products-item'>
+                                <div className="related-products-item-image-wrapper">
+                                    {related.items?.[0]?.images?.[0]?.imageUrl ? (
+                                        <img
+                                            className='related-products-item-image'
+                                            src={related.items[0].images[0].imageUrl}
+                                            alt={related.productName}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.style.display = 'none';
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="no-image">Sin imagen</div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
+                                <div className="related-products-item-text">
+                                    <p className="brand">{related.brand}</p>
+                                    <h3 className="title">{related.productName}</h3>
+                                    {related.items?.[0]?.sellers?.[0]?.commertialOffer?.Price && (
+                                        <p className="price">
+                                            ${(related.items[0].sellers[0].commertialOffer.Price).toLocaleString('es-CO')}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </>
     );
 };

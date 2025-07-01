@@ -32,6 +32,10 @@ $logoShort: 2.6rem;
         align-items: center;
         gap: 1.5rem;
 
+        @media (width < 860px) {
+            visibility: hidden;
+        }
+
         a {
             color: $bl;
             font-weight: 500;
@@ -75,6 +79,7 @@ $logoShort: 2.6rem;
             align-items: center;
             justify-content: center;
             position: relative;
+            cursor: pointer;
             gap: 1rem;
 
             div {

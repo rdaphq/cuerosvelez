@@ -15,6 +15,7 @@
 button, a, img {
   user-select: none;
   text-decoration: none;
+  font-family: 'Inter Tight', sans-serif;
 }
 
 .debug {
@@ -32,6 +33,7 @@ button, a, img {
 body {
   background-color: #f1f1f1;
   font-family: 'Inter Tight', sans-serif;
+  overflow-x: clip;
 }
 
 nav {
@@ -41,10 +43,5 @@ nav {
 }
 
 .product-addtoCart {
-  font-family: 'Inter Tight', sans-serif;
   font-size: 1.3rem;
-}
-
-.product-selector-options button {
-  font-family: 'Inter Tight', sans-serif;
 }

@@ -20,6 +20,11 @@
   align-items: center;
   gap: 1.5rem;
 }
+@media (width < 860px) {
+  .nav-links {
+    visibility: hidden;
+  }
+}
 .nav-links a {
   color: #000;
   font-weight: 500;
@@ -56,6 +61,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
   gap: 1rem;
 }
 .nav-ui-item div {

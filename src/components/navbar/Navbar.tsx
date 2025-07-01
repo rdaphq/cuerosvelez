@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useCart } from '../../context/CartContext';
 
 import LogoCafe from '/velez-cafe.png';
@@ -9,7 +9,7 @@ import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(useGSAP);
 
 const NavCart = () => {
-    const { totalItems, totalPrice } = useCart();
+    const { totalItems, totalPrice, toggleCart } = useCart();
     function pesoFormat (amount: number): string {
         return amount.toLocaleString('es-CO', {
             style: 'currency',
@@ -33,6 +33,7 @@ const NavCart = () => {
 
     //     document.addEventListener('scroll', navScroll);
     // })
+
     const nav = document.getElementById('nav');
 
     function navScroll () {
@@ -116,7 +117,7 @@ const NavCart = () => {
                         <i className={totalItems < 1 ? 'spacing-right nav-ui-icon fi fi-rr-user' : 'nav-ui-icon fi fi-rr-user'}></i>
                     </div>
                 </a>
-                <a href="/cart">
+                <a onClick={toggleCart}>
                     <div className='nav-ui-item'>
                         <div className={totalItems < 1 ? 'hidden' : ''}>{totalItems < 1 ? '' : totalItems}</div>
                         <i className='nav-ui-icon fi fi-rr-shopping-cart'></i>
