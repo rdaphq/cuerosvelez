@@ -4,18 +4,23 @@ $bl: #000;
 $bld: #00000010;
 
 $icon: 1.3rem;
-$logo: 4.2rem;
-$logoShort: 2.6rem;
+$logo: 4rem;
+$logoShort: 2.9rem;
 
 .nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow:  0 4px 1rem $bld;
+    box-shadow: 0 4px 1rem $bld;
     background-color: #fff;
     padding-block: 1.2rem;
     padding-inline: 2rem;
     position: sticky;
+    width: 100vw;
+
+    @media (width < 860px) {
+        justify-content: end;
+    }
 
     transition: padding-block .3s cubic-bezier(.82,.09,.31,.69);
 
@@ -33,7 +38,7 @@ $logoShort: 2.6rem;
         gap: 1.5rem;
 
         @media (width < 860px) {
-            visibility: hidden;
+            display: none;
         }
 
         a {
@@ -58,6 +63,11 @@ $logoShort: 2.6rem;
 
         transition: width .3s cubic-bezier(.82,.09,.31,.69);
 
+        @media (width < 860px) {
+            left: 3rem;
+            width: $logoShort;
+        }
+
         img {
             width: 100%;
             transition: filter .3s ease-in-out;
@@ -72,6 +82,7 @@ $logoShort: 2.6rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-right: 1rem;
         font-size: $icon;
 
         &-item {

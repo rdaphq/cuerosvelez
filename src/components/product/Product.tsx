@@ -69,7 +69,7 @@ const ProductDetail = () => {
                 setRelatedProducts(related || []);
 
             } catch (err) {
-                setError('Error al cargar el producto');
+                setError(`Error al cargar el producto: ${err}`);
             } finally {
                 setLoading(false);
             }

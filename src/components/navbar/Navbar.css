@@ -7,13 +7,19 @@
   padding-block: 1.2rem;
   padding-inline: 2rem;
   position: sticky;
+  width: 100vw;
   transition: padding-block 0.3s cubic-bezier(0.82, 0.09, 0.31, 0.69);
+}
+@media (width < 860px) {
+  .nav {
+    justify-content: end;
+  }
 }
 .nav.scrolled {
   padding-block: 0.8rem;
 }
 .nav.scrolled .nav-brand {
-  width: 2.6rem;
+  width: 2.9rem;
 }
 .nav-links {
   display: flex;
@@ -22,7 +28,7 @@
 }
 @media (width < 860px) {
   .nav-links {
-    visibility: hidden;
+    display: none;
   }
 }
 .nav-links a {
@@ -40,8 +46,14 @@
   left: 50%;
   translate: -50% -50%;
   position: absolute;
-  width: 4.2rem;
+  width: 4rem;
   transition: width 0.3s cubic-bezier(0.82, 0.09, 0.31, 0.69);
+}
+@media (width < 860px) {
+  .nav-brand {
+    left: 3rem;
+    width: 2.9rem;
+  }
 }
 .nav-brand img {
   width: 100%;
@@ -54,6 +66,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 1rem;
   font-size: 1.3rem;
 }
 .nav-ui-item {
