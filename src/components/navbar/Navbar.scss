@@ -1,0 +1,112 @@
+// COLORS
+$wh: #fff;
+$bl: #000;
+$bld: #00000010;
+
+$icon: 1.3rem;
+$logo: 4.2rem;
+$logoShort: 2.6rem;
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow:  0 4px 1rem $bld;
+    background-color: #fff;
+    padding-block: 1.2rem;
+    padding-inline: 2rem;
+    position: sticky;
+
+    transition: padding-block .3s cubic-bezier(.82,.09,.31,.69);
+
+    &.scrolled {
+        padding-block: .8rem;
+
+        .nav-brand {
+            width: $logoShort;
+        }
+    }
+
+    &-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        a {
+            color: $bl;
+            font-weight: 500;
+            font-size: .7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            &:hover {
+                color: $bld;
+            }
+        }
+    }
+
+    &-brand {
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        position: absolute;
+        width: $logo;
+
+        transition: width .3s cubic-bezier(.82,.09,.31,.69);
+
+        img {
+            width: 100%;
+            transition: filter .3s ease-in-out;
+
+            &:hover {
+                filter: invert(1);
+            }
+        }
+    }
+
+    &-ui {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $icon;
+
+        &-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            gap: 1rem;
+
+            div {
+                top: -12px;
+                right: -46px;
+                height: 20px;
+                width: 20px;
+                align-content: center;
+                text-align: center;
+                border-radius: 50%;
+                background-color: $bl;
+                position: relative;
+                color: $wh;
+                
+                font-size: .6rem;
+            }
+
+            p {
+                font-size: .9rem;
+                text-wrap: nowrap;
+                position: relative;
+            }
+        }
+
+        a {
+            color: $bl;
+            line-height: 0;
+        }
+
+        .nav-ui-icon {
+            color: $bl;
+            line-height: 0;
+        }
+    }
+}

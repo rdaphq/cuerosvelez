@@ -1,0 +1,50 @@
+@import url('https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::selection {
+  background-color: #99774f;
+  color: #000;
+}
+
+button, a, img {
+  user-select: none;
+  text-decoration: none;
+}
+
+.debug {
+  border: 1px solid #af2;
+}
+
+.hidden {
+  display: none;
+}
+
+.spacing-right {
+  margin-right: 1.5rem;
+}
+
+body {
+  background-color: #f1f1f1;
+  font-family: 'Inter Tight', sans-serif;
+}
+
+nav {
+  z-index: 100;
+  position: sticky;
+  top: 0;
+}
+
+.product-addtoCart {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1.3rem;
+}
+
+.product-selector-options button {
+  font-family: 'Inter Tight', sans-serif;
+}
