@@ -112,7 +112,7 @@ const NavCart = () => {
                 <a href="/"><img src={LogoCafe} alt="Velez Logo" /></a>
             </div>
             <div className='nav-ui' ref={navUiRef}>
-                <a href="/login">
+                <a href="/">
                     <div className='nav-ui-item'>
                         <i className={totalItems < 1 ? 'spacing-right nav-ui-icon fi fi-rr-user' : 'nav-ui-icon fi fi-rr-user'}></i>
                     </div>
