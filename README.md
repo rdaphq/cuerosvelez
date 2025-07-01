@@ -1,69 +1,42 @@
-# React + TypeScript + Vite
+# React.js PDP - Roman Duarte
+Este proyecto consiste en una prueba técnica realizada por mi, desde cero, para la prueba técnica de Cueros Velez. Se trata de una página PDP (Product Detail Page) en la que el producto específico se puede añadir y borrar del carrito, se puede ver y detallar el producto, y se muestran productos relacionados al mismo.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tecnologías utilizadas
+- **Vite** + **React TypeScript**
+- **Keen-Slider** (para el slider de imágenes)
+- **Sass**
 
-Currently, two official plugins are available:
+## Funciones y Componentes
+El proyecto cuenta con distintas funciones y componentes para cumplir con las expectativas de la prueba técnica:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Página de producto:** Componente donde se muestra el producto especificado en la prueba técnica haciendo uso de la API de Cueros Velez.
+`/src/components/product/Product.tsx`
 
-## Expanding the ESLint configuration
+- **Navbar:** Componente que se encuentra en la parte superior de la página, que hace función de barra de navegación y cuenta con el branding de Velez y la función importante del carrito.
+`/src/components/navbar/Navbar.tsx`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Cart:** Componente donde se muestra el carrito al usuario, que contiene cada producto y su cantidad añadida, la suma de todos los productos, función de eliminar productos específicos y botón de "Checkout" (sólo visual).
+`/src/components/cart/Cart.tsx`
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **CartContext:** Contexto donde se maneja el estado del carrito, el guardado en memoria local y las funciones para añadir y eliminar productos del carrito.
+`/src/context/CartContext.tsx`
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Instalación
+Si deseas ejecutar este proyecto en tu máquina local:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Clona el repositorio en una directorio, establece el directorio en tu terminal y ejecuta este comando para instalar las dependencias.
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Ejecuta este comando para iniciar el servidor de desarrollo.
+```bash
+npm run dev
 ```
+
+- Cuando el servidor de desarrollo está en funcionamiento, visita `http://localhost:5173` en tu navegador de preferencia para ver la página PDP.
+
+## Licencia
+Este proyecto no está bajo una licencia, pero pertenece a Cueros Velez. No debe ser copiado, distribuido o modificado sin permiso previo.
+
+### Hecho con ❤️ por Roman
